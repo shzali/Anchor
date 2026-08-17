@@ -1,69 +1,194 @@
-import Image from "next/image";
+"use client"; // TODO - this should be server component. Extract to individual client components
 
-export default function Home() {
-  return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+import { useState } from "react";
+
+interface Task {
+  id: string;
+  description: string;
+  isComplete: boolean;
 }
+
+interface Category {
+  id: string;
+  name: string;
+  tasks: Task[];
+}
+
+const Home = () => {
+  const [date, setDate] = useState(new Date());
+  // 'id' holds the id of the category for which the task is being added
+  const [newTaskInput, setNewTaskInput] = useState({ id: "", description: "" });
+  const [isAddingNewTask, setIsAddingNewTask] = useState(false);
+
+  const [planner, setPlanner] = useState<Category[]>([
+    {
+      id: "1",
+      name: "Project",
+      tasks: [
+        {
+          id: "1",
+          description: "30 mins oihuiguighj iu ihuihuiohub oiuhoihukbhioh",
+          isComplete: false,
+        },
+        {
+          id: "2",
+          description: "30 mins",
+          isComplete: false,
+        },
+      ],
+    },
+    {
+      id: "2",
+      name: "Jobs",
+      tasks: [
+        {
+          id: "1",
+          description: "30 mins",
+          isComplete: false,
+        },
+        {
+          id: "2",
+          description: "30 mins",
+          isComplete: false,
+        },
+      ],
+    },
+    {
+      id: "3",
+      name: "Personal Learning",
+      tasks: [
+        {
+          id: "1",
+          description: "30 mins",
+          isComplete: false,
+        },
+      ],
+    },
+    {
+      id: "4",
+      name: "Gym/Exercises",
+      tasks: [
+        {
+          id: "1",
+          description: "30 mins",
+          isComplete: false,
+        },
+        {
+          id: "2",
+          description: "30 mins",
+          isComplete: false,
+        },
+      ],
+    },
+    {
+      id: "5",
+      name: "Eating",
+      tasks: [
+        {
+          id: "1",
+          description: "30 mins",
+          isComplete: false,
+        },
+        {
+          id: "2",
+          description: "30 mins",
+          isComplete: false,
+        },
+      ],
+    },
+  ]);
+
+  return (
+    <>
+      <div>
+        <button
+          onClick={() => {
+            date.setDate(date.getDate() - 1);
+            setDate(new Date(date));
+          }}
+        >
+          Prev
+        </button>
+        <p>{date.toLocaleDateString()}</p>
+        <button
+          onClick={() => {
+            date.setDate(date.getDate() + 1);
+            setDate(new Date(date));
+          }}
+        >
+          Next
+        </button>
+      </div>
+
+      <div style={{ display: "flex", gap: "5rem" }}>
+        {planner.map((category) => (
+          <div key={category.id}>
+            <p>{category.name}</p>
+            <button
+              disabled={isAddingNewTask}
+              onClick={() => {
+                setIsAddingNewTask(true);
+                setNewTaskInput({ id: category.id, description: "" });
+              }}
+            >
+              Add
+            </button>
+            {isAddingNewTask && newTaskInput.id === category.id && (
+              <>
+                <input
+                  value={newTaskInput.description}
+                  onChange={(e) =>
+                    setNewTaskInput({
+                      id: newTaskInput.id,
+                      description: e.target.value,
+                    })
+                  }
+                />
+                <button
+                  onClick={() => {
+                    setIsAddingNewTask(false);
+                    const newPlanner = [...planner].map((c) => {
+                      if (c.id === category.id) {
+                        console.log("YES");
+                        c.tasks = [
+                          ...c.tasks,
+                          {
+                            id: "10",
+                            description: newTaskInput.description,
+                            isComplete: false,
+                          },
+                        ];
+                      }
+                      return c;
+                    });
+                    console.log(newPlanner);
+                    // const cat = newPlanner.find((c) => c.id === category.id);
+                    // cat.tasks = [
+                    //   ...cat?.tasks,
+                    //   {
+                    //     id: "5",
+                    //     description: newTaskInput.task,
+                    //     isComplete: false,
+                    //   },
+                    // ];
+                    setPlanner(newPlanner);
+                  }}
+                >
+                  Add
+                </button>
+                <button onClick={() => setIsAddingNewTask(false)}>
+                  Cancel
+                </button>
+              </>
+            )}
+            {category.tasks.map((task) => (
+              <p key={task.id}>{task.description}</p>
+            ))}
+          </div>
+        ))}
+      </div>
+    </>
+  );
+};
+
+export default Home;

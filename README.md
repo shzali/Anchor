@@ -1,36 +1,15 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Anchor
 
-## Getting Started
+This is my personal planner for keeping track of my tasks throughout the day.
 
-First, run the development server:
+## Motivation
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+For several months, I've been using Excel to plan my daily tasks. Although it works, the spreadsheet would become messy because I would often add comments around the tasks. This was made worse by the cells become elongated as a result of long content in a cell above or below in the same column.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Many planner applications already exist. However, I wanted one that is specific to my own workflows.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+A simple to-do app won't suffice, because I need the app to provide weekly statistics on tasks that I complete and tasks that I fall behind on.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Changelog
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+See [changelog.md](./changelog.md) for information about the changes on each day there was a commit.
