@@ -88,7 +88,7 @@ const Home = () => {
   const categories = ["Project", "Jobs", "Exercises", "Learning"]
 
   return (
-    <div className="flex min-h-screen flex-col items-stretch gap-5">
+    <div className="flex min-h-screen w-full flex-col gap-5 p-6">
       <div className="flex w-full items-center justify-center gap-5">
         <Button
           variant="outline"
@@ -113,13 +113,15 @@ const Home = () => {
         </Button>
       </div>
       <Tabs defaultValue="Project" className="w-full">
-        <TabsList className="mx-auto w-fit">
-          {planner.map((category) => (
-            <TabsTrigger key={category.id} value={category.name}>
-              {category.name}
-            </TabsTrigger>
-          ))}
-        </TabsList>
+        <div className="flex w-full justify-center overflow-x-auto">
+          <TabsList className="shrink-0">
+            {planner.map((category) => (
+              <TabsTrigger key={category.id} value={category.name}>
+                {category.name}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </div>
         {planner.map((category) => (
           <TabsContent key={category.id} value={category.name}>
             <div className="flex flex-col items-stretch gap-3">

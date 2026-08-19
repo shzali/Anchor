@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, DM_Sans, Outfit } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
+import type { Viewport } from "next"
 
 const outfitHeading = Outfit({ subsets: ["latin"], variable: "--font-heading" })
 
@@ -35,4 +36,9 @@ export default function RootLayout({
       </body>
     </html>
   )
+}
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
 }
