@@ -83,70 +83,56 @@ const Home = () => {
         },
       ],
     },
-    {
-      id: "5",
-      name: "Eating",
-      tasks: [
-        {
-          id: "1",
-          description: "30 mins",
-          isComplete: false,
-        },
-        {
-          id: "2",
-          description: "30 mins",
-          isComplete: false,
-        },
-      ],
-    },
   ])
 
   const categories = ["Project", "Jobs", "Exercises", "Learning"]
 
   return (
-    <div className="flex flex-col items-center gap-5">
+    <div className="flex min-h-screen flex-col items-center gap-5">
       <div className="flex items-center gap-5">
-        <Button variant="outline" size="icon-xs">
-          <ChevronLeftIcon />
-        </Button>
-        <h1>{date.toLocaleDateString()}</h1>
-        <Button variant="outline" size="icon-xs">
-          <ChevronRightIcon />
-        </Button>
-      </div>
-      <Tabs defaultValue="account" className="">
-        <TabsList>
-          {categories.map((category) => (
-            <TabsTrigger key={category} value={category}>
-              {category}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-        <TabsContent value="account">
-          Make changes to your account here.
-        </TabsContent>
-        <TabsContent value="password">Change your password here.</TabsContent>
-      </Tabs>
-      {/* <div>
-        <button
+        <Button
+          variant="outline"
+          size="icon-xs"
           onClick={() => {
             date.setDate(date.getDate() - 1)
             setDate(new Date(date))
           }}
         >
-          Prev
-        </button>
-        <p>{date.toLocaleDateString()}</p>
-        <button
+          <ChevronLeftIcon />
+        </Button>
+        <h1>{date.toLocaleDateString()}</h1>
+        <Button
+          variant="outline"
+          size="icon-xs"
           onClick={() => {
             date.setDate(date.getDate() + 1)
             setDate(new Date(date))
           }}
         >
-          Next
-        </button>
+          <ChevronRightIcon />
+        </Button>
       </div>
-
+      <Tabs defaultValue="Project" className="w-full">
+        <TabsList className="mx-auto w-fit">
+          {planner.map((category) => (
+            <TabsTrigger key={category.id} value={category.name}>
+              {category.name}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+        {planner.map((category) => (
+          <TabsContent key={category.id} value={category.name}>
+            <div className="flex flex-col items-stretch gap-3">
+              {category.tasks.map((task) => (
+                <div key={task.id}>
+                  <p>{task.description}</p>
+                </div>
+              ))}
+            </div>
+          </TabsContent>
+        ))}
+      </Tabs>
+      {/*
       <div style={{ display: "flex", gap: "5rem" }}>
         {planner.map((category) => (
           <div key={category.id}>
