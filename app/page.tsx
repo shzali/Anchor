@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { ChevronRightIcon, ChevronLeftIcon } from "lucide-react"
 
 interface Task {
   id: string
@@ -103,9 +104,17 @@ const Home = () => {
   const categories = ["Project", "Jobs", "Exercises", "Learning"]
 
   return (
-    <>
-      <h1>{date.toLocaleDateString()}</h1>
-      <Tabs defaultValue="account" className="w-[400px]">
+    <div className="flex flex-col items-center gap-5">
+      <div className="flex items-center gap-5">
+        <Button variant="outline" size="icon-xs">
+          <ChevronLeftIcon />
+        </Button>
+        <h1>{date.toLocaleDateString()}</h1>
+        <Button variant="outline" size="icon-xs">
+          <ChevronRightIcon />
+        </Button>
+      </div>
+      <Tabs defaultValue="account" className="">
         <TabsList>
           {categories.map((category) => (
             <TabsTrigger key={category} value={category}>
@@ -205,7 +214,7 @@ const Home = () => {
           </div>
         ))}
       </div> */}
-    </>
+    </div>
   )
 }
 
