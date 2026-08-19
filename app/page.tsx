@@ -88,7 +88,7 @@ const Home = () => {
   const categories = ["Project", "Jobs", "Exercises", "Learning"]
 
   return (
-    <div className="flex min-h-screen flex-col items-center gap-5">
+    <div className="flex min-h-screen flex-col items-center gap-5 p-6">
       <div className="flex items-center gap-5">
         <Button
           variant="outline"
