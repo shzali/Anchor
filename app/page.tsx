@@ -1,24 +1,26 @@
-"use client"; // TODO - this should be server component. Extract to individual client components
+"use client" // TODO - this should be server component. Extract to individual client components
 
-import { useState } from "react";
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 interface Task {
-  id: string;
-  description: string;
-  isComplete: boolean;
+  id: string
+  description: string
+  isComplete: boolean
 }
 
 interface Category {
-  id: string;
-  name: string;
-  tasks: Task[];
+  id: string
+  name: string
+  tasks: Task[]
 }
 
 const Home = () => {
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(new Date())
   // 'id' holds the id of the category for which the task is being added
-  const [newTaskInput, setNewTaskInput] = useState({ id: "", description: "" });
-  const [isAddingNewTask, setIsAddingNewTask] = useState(false);
+  const [newTaskInput, setNewTaskInput] = useState({ id: "", description: "" })
+  const [isAddingNewTask, setIsAddingNewTask] = useState(false)
 
   const [planner, setPlanner] = useState<Category[]>([
     {
@@ -96,15 +98,31 @@ const Home = () => {
         },
       ],
     },
-  ]);
+  ])
+
+  const categories = ["Project", "Jobs", "Exercises", "Learning"]
 
   return (
     <>
-      <div>
+      <h1>{date.toLocaleDateString()}</h1>
+      <Tabs defaultValue="account" className="w-[400px]">
+        <TabsList>
+          {categories.map((category) => (
+            <TabsTrigger key={category} value={category}>
+              {category}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+        <TabsContent value="account">
+          Make changes to your account here.
+        </TabsContent>
+        <TabsContent value="password">Change your password here.</TabsContent>
+      </Tabs>
+      {/* <div>
         <button
           onClick={() => {
-            date.setDate(date.getDate() - 1);
-            setDate(new Date(date));
+            date.setDate(date.getDate() - 1)
+            setDate(new Date(date))
           }}
         >
           Prev
@@ -112,8 +130,8 @@ const Home = () => {
         <p>{date.toLocaleDateString()}</p>
         <button
           onClick={() => {
-            date.setDate(date.getDate() + 1);
-            setDate(new Date(date));
+            date.setDate(date.getDate() + 1)
+            setDate(new Date(date))
           }}
         >
           Next
@@ -127,8 +145,8 @@ const Home = () => {
             <button
               disabled={isAddingNewTask}
               onClick={() => {
-                setIsAddingNewTask(true);
-                setNewTaskInput({ id: category.id, description: "" });
+                setIsAddingNewTask(true)
+                setNewTaskInput({ id: category.id, description: "" })
               }}
             >
               Add
@@ -146,10 +164,10 @@ const Home = () => {
                 />
                 <button
                   onClick={() => {
-                    setIsAddingNewTask(false);
+                    setIsAddingNewTask(false)
                     const newPlanner = [...planner].map((c) => {
                       if (c.id === category.id) {
-                        console.log("YES");
+                        console.log("YES")
                         c.tasks = [
                           ...c.tasks,
                           {
@@ -157,11 +175,11 @@ const Home = () => {
                             description: newTaskInput.description,
                             isComplete: false,
                           },
-                        ];
+                        ]
                       }
-                      return c;
-                    });
-                    console.log(newPlanner);
+                      return c
+                    })
+                    console.log(newPlanner)
                     // const cat = newPlanner.find((c) => c.id === category.id);
                     // cat.tasks = [
                     //   ...cat?.tasks,
@@ -171,7 +189,7 @@ const Home = () => {
                     //     isComplete: false,
                     //   },
                     // ];
-                    setPlanner(newPlanner);
+                    setPlanner(newPlanner)
                   }}
                 >
                   Add
@@ -186,9 +204,9 @@ const Home = () => {
             ))}
           </div>
         ))}
-      </div>
+      </div> */}
     </>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home
