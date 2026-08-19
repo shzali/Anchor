@@ -88,8 +88,8 @@ const Home = () => {
   const categories = ["Project", "Jobs", "Exercises", "Learning"]
 
   return (
-    <div className="flex min-h-screen flex-col items-center gap-5 p-6">
-      <div className="flex items-center gap-5">
+    <div className="flex min-h-screen flex-col items-stretch gap-5 p-6">
+      <div className="flex w-full items-center justify-center gap-5">
         <Button
           variant="outline"
           size="icon-xs"
@@ -132,74 +132,6 @@ const Home = () => {
           </TabsContent>
         ))}
       </Tabs>
-      {/*
-      <div style={{ display: "flex", gap: "5rem" }}>
-        {planner.map((category) => (
-          <div key={category.id}>
-            <p>{category.name}</p>
-            <button
-              disabled={isAddingNewTask}
-              onClick={() => {
-                setIsAddingNewTask(true)
-                setNewTaskInput({ id: category.id, description: "" })
-              }}
-            >
-              Add
-            </button>
-            {isAddingNewTask && newTaskInput.id === category.id && (
-              <>
-                <input
-                  value={newTaskInput.description}
-                  onChange={(e) =>
-                    setNewTaskInput({
-                      id: newTaskInput.id,
-                      description: e.target.value,
-                    })
-                  }
-                />
-                <button
-                  onClick={() => {
-                    setIsAddingNewTask(false)
-                    const newPlanner = [...planner].map((c) => {
-                      if (c.id === category.id) {
-                        console.log("YES")
-                        c.tasks = [
-                          ...c.tasks,
-                          {
-                            id: "10",
-                            description: newTaskInput.description,
-                            isComplete: false,
-                          },
-                        ]
-                      }
-                      return c
-                    })
-                    console.log(newPlanner)
-                    // const cat = newPlanner.find((c) => c.id === category.id);
-                    // cat.tasks = [
-                    //   ...cat?.tasks,
-                    //   {
-                    //     id: "5",
-                    //     description: newTaskInput.task,
-                    //     isComplete: false,
-                    //   },
-                    // ];
-                    setPlanner(newPlanner)
-                  }}
-                >
-                  Add
-                </button>
-                <button onClick={() => setIsAddingNewTask(false)}>
-                  Cancel
-                </button>
-              </>
-            )}
-            {category.tasks.map((task) => (
-              <p key={task.id}>{task.description}</p>
-            ))}
-          </div>
-        ))}
-      </div> */}
     </div>
   )
 }
