@@ -1,9 +1,12 @@
+### 21st August 2026
+
+- Double clicking on a task will bring up a dialog to edit the task (editing functionality does not work yet).
+
 ### 20th August 2026
 
 - For mobile devices, tasks are displayed as a vertical list by category.
 - Clicking on a task will change its 'status' (denoted by its colour). The status of a task can be: pending (uncoloured), complete (green), partially complete (yellow) or incomplete (red).
 - Can add a new task to a category
-
 
 ### 19th August 2026
 
