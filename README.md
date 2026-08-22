@@ -10,6 +10,17 @@ Many planner applications already exist. However, I wanted one that is specific 
 
 A simple to-do app won't suffice, because I need the app to provide weekly statistics on tasks that I complete and tasks that I fall behind on.
 
+## Tech Stack
+
+- React (Next.js) + TypeScript
+- shadcn (Tailwind CSS)
+- Prisma (PostgreSQL)
+- Neon
+
+## Other Packages
+
+- uuid
+
 ## Changelog
 
 See [changelog.md](./changelog.md) for information about the changes on each day there was a commit.

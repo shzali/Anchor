@@ -1,3 +1,8 @@
+### 22nd August 2026
+
+- Can now update the description of a task.
+- Refactored code into different components in their separate files, to clean and organise the codebase.
+
 ### 21st August 2026
 
 - Double clicking on a task will bring up a dialog to edit the task (editing functionality does not work yet).

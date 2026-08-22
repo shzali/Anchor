@@ -2,21 +2,10 @@
 
 import { useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ChevronRightIcon, ChevronLeftIcon } from "lucide-react"
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -31,25 +20,22 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  SelectLabel,
 } from "@/components/ui/select"
 
-interface Task {
-  id: string
-  description: string
-  status: "pending" | "complete" | "partially complete" | "incomplete"
-}
-
-interface Category {
-  id: string
-  name: string
-  tasks: Task[]
-}
+import { v4 as uuidv4 } from "uuid"
+import Task from "@/components/custom/Task"
+import Category from "@/lib/types/category"
+import ITask from "@/lib/types/task"
 
 const Home = () => {
   const [date, setDate] = useState(new Date())
-  // 'id' holds the id of the category for which the task is being added
-  const [newTaskInput, setNewTaskInput] = useState({ id: "", description: "" })
+  // 'categoryId' holds the id of the category for which the task is being added.
+  // 'taskId' is used only when editing a task. It is not needed when adding a new task.
+  const [taskInput, setTaskInput] = useState({
+    categoryId: "",
+    taskId: "",
+    description: "",
+  })
   const [isNewDialogOpen, setIsNewDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
 
@@ -150,25 +136,46 @@ const Home = () => {
   ]
 
   const addTask = () => {
-    if (newTaskInput.id !== "" && newTaskInput.description !== "") {
+    if (taskInput.categoryId !== "" && taskInput.description !== "") {
+      const newTask: ITask = {
+        id: uuidv4(),
+        description: taskInput.description,
+        status: "pending",
+      }
       const newPlanner = [...planner].map((category) => {
-        if (category.id === newTaskInput.id) {
+        if (category.id === taskInput.categoryId) {
           return {
             ...category,
-            tasks: [
-              ...category.tasks,
-              {
-                id: "3",
-                description: newTaskInput.description,
-                status: "pending",
-              },
-            ],
+            tasks: [...category.tasks, newTask],
           }
         }
         return category
       })
       setPlanner(newPlanner)
       setIsNewDialogOpen(false)
+    }
+  }
+
+  const updateTask = () => {
+    console.log(taskInput)
+    if (taskInput.categoryId !== "" && taskInput.description !== "") {
+      const newPlanner = [...planner].map((category) => {
+        if (category.id === taskInput.categoryId) {
+          return {
+            ...category,
+            tasks: category.tasks.map((task) => {
+              if (task.id === taskInput.taskId) {
+                return { ...task, description: taskInput.description }
+              }
+              return task
+            }),
+          }
+        }
+        return category
+      })
+      console.log(newPlanner)
+      setPlanner(newPlanner)
+      setIsEditDialogOpen(false)
     }
   }
 
@@ -207,9 +214,9 @@ const Home = () => {
             <Field>
               <Select
                 items={categories}
-                value={newTaskInput.id}
+                value={taskInput.categoryId}
                 onValueChange={(e) =>
-                  setNewTaskInput({ ...newTaskInput, id: e! })
+                  setTaskInput({ ...taskInput, categoryId: e! })
                 }
               >
                 <SelectTrigger className="w-[180px]">
@@ -231,10 +238,10 @@ const Home = () => {
               <Input
                 id="description"
                 name="description"
-                value={newTaskInput.description}
+                value={taskInput.description}
                 onChange={(e) =>
-                  setNewTaskInput({
-                    ...newTaskInput,
+                  setTaskInput({
+                    ...taskInput,
                     description: e.target.value,
                   })
                 }
@@ -250,52 +257,14 @@ const Home = () => {
             <p className="mb-3 font-bold uppercase">{category.name}</p>
             <div className="flex flex-col gap-3">
               {category.tasks.map((task) => (
-                // <div key={task.id} className="bg-green-400 p-2">
-                //   <p>{task.description}</p>
-                // </div>
-                <Card
+                <Task
                   key={task.id}
-                  className={
-                    task.status === "complete"
-                      ? "bg-green-900"
-                      : task.status === "partially complete"
-                        ? "bg-yellow-900"
-                        : task.status === "incomplete"
-                          ? "bg-red-900"
-                          : ""
-                  }
-                  onClick={() => {
-                    // The card can be single-clicked to change its status, or double-clicked to be edited.
-                    // To allow for double-clicking, a short timer is set when clicked once.
-
-                    // This timer is assigned to timerRef, to ensure that another timer cannot be activated when one is active.
-                    // Essentially, only one timer can be activated at a time.
-
-                    // The doubleRef ref is used to keep track of if the card has been double-clicked. Essentially, when a card
-                    // is clicked when there is no timer active, then the timer starts. If it is then clicked while a timer is active,
-                    // that will count as a double-click, so doubleRef is set to true. If the timer stops when doubleRef is false (when
-                    // there is no second click), then a single-click is registered.
-
-                    // doubleRef uses useRef instead of useState, since we must be able to change the state while the timer is active. useState
-                    // does not allow for this.
-                    if (timerRef.current === null) {
-                      timerRef.current = setTimeout(() => {
-                        timerRef.current = null
-                        if (doubleRef.current === false) {
-                          changeTaskStatus(category.id, task.id)
-                        }
-                        doubleRef.current = false
-                      }, 170)
-                    } else {
-                      setIsEditDialogOpen(true)
-                      doubleRef.current = true
-                    }
-                  }}
-                >
-                  <CardContent>
-                    <p>{task.description}</p>
-                  </CardContent>
-                </Card>
+                  category={category}
+                  task={task}
+                  changeTaskStatus={changeTaskStatus}
+                  setIsEditDialogOpen={setIsEditDialogOpen}
+                  setTaskInput={setTaskInput}
+                />
               ))}
             </div>
           </div>
@@ -307,22 +276,35 @@ const Home = () => {
             <DialogTitle>Edit Task</DialogTitle>
           </DialogHeader>
           <FieldGroup>
-            {/* <Field>
+            <Field>
               <Label htmlFor="description">Description</Label>
               <Input
                 id="description"
                 name="description"
-                value={newTaskInput.description}
+                value={taskInput.description}
                 onChange={(e) =>
-                  setNewTaskInput({
-                    ...newTaskInput,
+                  setTaskInput({
+                    ...taskInput,
                     description: e.target.value,
                   })
                 }
               />
-            </Field> */}
-            <Button>Update</Button>
-            <Button>Cancel</Button>
+            </Field>
+            <Button
+              onClick={() => {
+                updateTask()
+              }}
+            >
+              Update
+            </Button>
+            <Button
+              onClick={() => {
+                setIsEditDialogOpen(false)
+                setTaskInput({ categoryId: "", description: "", taskId: "" })
+              }}
+            >
+              Cancel
+            </Button>
           </FieldGroup>
         </DialogContent>
       </Dialog>
