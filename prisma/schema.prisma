@@ -1,0 +1,55 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Day {
+  date       DateTime      @id @unique @db.Date
+  categories CategoryDay[]
+  tasks      Task[]
+}
+
+model Task {
+  id          String @id @default(uuid())
+  description String
+  status      Status
+
+  day     Day      @relation(fields: [dayDate], references: [date])
+  dayDate DateTime @db.Date
+
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId String
+}
+
+model Category {
+  id    String @id @default(uuid())
+  name  String
+  tasks Task[]
+
+  days CategoryDay[]
+}
+
+model CategoryDay {
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId String
+  day        Day      @relation(fields: [dayDate], references: [date])
+  dayDate    DateTime @db.Date
+
+  @@id([categoryId, dayDate])
+}
+
+enum Status {
+  PENDING
+  COMPLETE
+  PARTIALLY_COMPLETE
+  INCOMPLETE
+}

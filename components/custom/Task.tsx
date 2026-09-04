@@ -21,6 +21,7 @@ const Task = ({
   setIsEditDialogOpen,
   setTaskInput,
 }: Props) => {
+  // These refs are used for managing the single-click and double-click functionalities.
   const timerRef = useRef<null | NodeJS.Timeout>(null)
   const doubleClickedRef = useRef(false)
 

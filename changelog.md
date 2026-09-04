@@ -1,3 +1,10 @@
+### 30th August - 3rd September
+
+- Added database integration
+- Cannot create nor save tasks yet, but when the page is loaded (showing today's date), tasks and categories for today will be fetched and displayed
+- Currently adding functionality to add categories and create new ones
+- Modified schema and model relations - added some more relations, while having removed some other unnecessary ones
+
 ### 22nd August 2026
 
 - Can now update the description of a task.
