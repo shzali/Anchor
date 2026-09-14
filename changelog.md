@@ -1,3 +1,7 @@
+### 14th September
+
+- For a particular day, you can add a category and it will be displayed on the screen.
+
 ### 30th August - 3rd September
 
 - Added database integration

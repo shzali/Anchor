@@ -102,3 +102,29 @@ export const POST = async (
     console.error(err)
   }
 }
+
+export const PUT = async (
+  req: Request,
+  { params }: { params: Promise<{ date: string }> }
+) => {
+  console.log("------------------------------------------------")
+  try {
+    const date = (await params).date
+    const categoryId = (await req.json()).categoryId
+
+    // console.log("ATTEMPTING")
+    console.log(date)
+    console.log(categoryId)
+    await prisma.categoryDay.create({
+      data: {
+        dayDate: new Date(date),
+        categoryId,
+      },
+    })
+    console.log("SUCCESS")
+    return Response.json({}, { status: 200 })
+  } catch (err) {
+    console.log("FAIL")
+    console.error(err)
+  }
+}

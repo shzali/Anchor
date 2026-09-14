@@ -11,3 +11,15 @@ export const GET = async (req: Request) => {
     console.error(err)
   }
 }
+
+export const POST = async (req: Request) => {
+  try {
+    const body = await req.json()
+    // body is of the format: {id: string, name: string}
+    await prisma.category.create({
+      data: body,
+    })
+  } catch (err) {
+    console.error(err)
+  }
+}

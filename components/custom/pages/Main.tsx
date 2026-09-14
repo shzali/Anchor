@@ -11,7 +11,6 @@ import NewTaskDialog from "@/components/custom/NewTaskDialog"
 import EditTaskDialog from "@/components/custom/EditTaskDialog"
 import axios from "axios"
 import { prisma } from "@/lib/prisma"
-import CategoryPrisma from "@/lib/types/category"
 import AddCategoryDialog from "../AddCategoryDialog"
 import CategoryDB from "@/lib/types/categoryDB"
 
@@ -103,36 +102,50 @@ const Main = () => {
   const [categories, setCategories] = useState<CategoryDB[]>([])
   const [tasks, setTasks] = useState<TaskDB[]>([])
 
+  // Holds all categories, even ones not added to the day
+  const [allCategories, setAllCategories] = useState<CategoryDB[]>([])
+
   useEffect(() => {
     const getDayData = async () => {
       try {
         const res = await axios.get(`/api/days/${date}`)
         if (res.status === 200) {
-          console.log("DAY DATA")
-          console.log(res)
           const data = res.data
+          const cats: CategoryDB[] = data.categories
+          console.log("CATEGORIES")
+          console.log(data.categories)
           setCategories(data.categories)
           setTasks(data.tasks)
+
+          try {
+            const res = await axios.get(`/api/categories`)
+            if (res.status === 200) {
+              const modifiedCategories = res.data.map(
+                (category: CategoryDB) => {
+                  return {
+                    id: category.id,
+                    name: category.name,
+                    isAdded: cats.some((cat) => cat.id === category.id)
+                      ? true
+                      : false,
+                  }
+                }
+              )
+              setAllCategories(modifiedCategories)
+            }
+          } catch (err) {
+            console.error(err)
+          }
         }
       } catch (err) {
         console.error(err)
       }
     }
 
-    const getCategories = async () => {
-      try {
-        const res = await axios.get(`/api/categories`)
-        if (res.status === 200) {
-          // console.log(res.data)
-          setCategories(res.data)
-        }
-      } catch (err) {
-        console.error(err)
-      }
-    }
+    const getCategories = async () => {}
 
-    getCategories()
     getDayData()
+    getCategories()
   }, [])
 
   const saveData = async () => {
@@ -210,6 +223,41 @@ const Main = () => {
     }
   }
 
+  const createCategory = async (newCategoryName: string) => {
+    try {
+      const newCategory: CategoryDB = { id: uuidv4(), name: newCategoryName }
+      const res = await axios.post(`/api/categories`, newCategory)
+      if (res.status === 200) {
+        setCategories([...allCategories, newCategory])
+      }
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  const addCategory = async (categoryId: string, categoryName: string) => {
+    try {
+      const res = await axios.put(`/api/days/${date}`, { categoryId })
+      if (res.status === 200) {
+        console.log("all good")
+        const newCategories = [...allCategories].map((category) => {
+          if (category.id === categoryId) {
+            return { ...category, isAdded: true }
+          }
+          return category
+        })
+        setAllCategories(newCategories)
+        setCategories([
+          ...categories,
+          { id: categoryId, name: categoryName, isAdded: true },
+        ])
+      }
+    } catch (err) {
+      console.log("error!")
+      console.error(err)
+    }
+  }
+
   return (
     <div className="flex min-h-screen w-full flex-col gap-5 p-6">
       <Button onClick={saveData}>Save</Button>
@@ -231,7 +279,9 @@ const Main = () => {
       <AddCategoryDialog
         isAddCategoryOpen={isAddCategoryOpen}
         setIsAddCategoryOpen={setIsAddCategoryOpen}
-        categories={categories}
+        categories={allCategories}
+        createCategory={createCategory}
+        addCategory={addCategory}
       />
       <Button onClick={() => setIsAddCategoryOpen(true)}>Add Category</Button>
       <div className="flex flex-col gap-17">
@@ -240,7 +290,7 @@ const Main = () => {
             <p>{category.name}</p>
             {tasks.map((task) => {
               if (task.categoryId === category.id) {
-                return <p>{task.description}</p>
+                return <p key={task.id}>{task.description}</p>
               }
             })}
           </div>
