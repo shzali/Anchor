@@ -120,6 +120,8 @@ const Main = () => {
           try {
             const res = await axios.get(`/api/categories`)
             if (res.status === 200) {
+              console.log("000000000000000000000000000000000000")
+              console.log(res.data)
               const modifiedCategories = res.data.map(
                 (category: CategoryDB) => {
                   return {
@@ -179,24 +181,47 @@ const Main = () => {
     setPlanner(newPlanner)
   }
 
-  const addTask = () => {
+  const addTask = async () => {
+    console.log("1")
+    console.log(taskInput)
     if (taskInput.categoryId !== "" && taskInput.description !== "") {
-      const newTask: ITask = {
+      // const newTask: ITask = {
+      //   id: uuidv4(),
+      //   description: taskInput.description,
+      //   status: "pending",
+      // }
+
+      console.log("2")
+      const newTask: TaskDB = {
         id: uuidv4(),
         description: taskInput.description,
         status: "pending",
+        dayDate: date,
+        categoryId: taskInput.categoryId,
       }
-      const newPlanner = [...planner].map((category) => {
-        if (category.id === taskInput.categoryId) {
-          return {
-            ...category,
-            tasks: [...category.tasks, newTask],
-          }
-        }
-        return category
-      })
-      setPlanner(newPlanner)
+
+      console.log("3")
+      // const newPlanner = [...planner].map((category) => {
+      //   if (category.id === taskInput.categoryId) {
+      //     return {
+      //       ...category,
+      //       tasks: [...category.tasks, newTask],
+      //     }
+      //   }
+      //   return category
+      // })
+      // setPlanner(newPlanner)
+      console.log("NEW TASKS")
+      console.log([...tasks, newTask])
+      setTasks([...tasks, newTask])
       setIsNewDialogOpen(false)
+      console.log("4")
+
+      try {
+        const res = await axios.put(`/api/tasks`, newTask)
+      } catch (err) {
+        console.error(err)
+      }
     }
   }
 
@@ -238,6 +263,7 @@ const Main = () => {
   const addCategory = async (categoryId: string, categoryName: string) => {
     try {
       const res = await axios.put(`/api/days/${date}`, { categoryId })
+      console.log("1")
       if (res.status === 200) {
         console.log("all good")
         const newCategories = [...allCategories].map((category) => {
@@ -268,6 +294,7 @@ const Main = () => {
         setIsNewDialogOpen={setIsEditDialogOpen}
         setTaskInput={setTaskInput}
         taskInput={taskInput}
+        allCategories={allCategories}
       />
       <EditTaskDialog
         isEditDialogOpen={isEditDialogOpen}
@@ -293,6 +320,9 @@ const Main = () => {
                 return <p key={task.id}>{task.description}</p>
               }
             })}
+            <Button variant="outline" onClick={() => setIsNewDialogOpen(true)}>
+              New Task
+            </Button>
           </div>
         ))}
         {/* {planner.map((category) => (

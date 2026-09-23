@@ -1,3 +1,7 @@
+### 23rd September
+
+- Can add a task to a category, and will persist.
+
 ### 14th September
 
 - For a particular day, you can add a category and it will be displayed on the screen.

@@ -13,8 +13,10 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectLabel,
 } from "../ui/select"
 import mockCategories from "@/lib/mockCategories"
+import CategoryDB from "@/lib/types/categoryDB"
 
 interface Props {
   isNewDialogOpen: boolean
@@ -22,6 +24,12 @@ interface Props {
   taskInput: TaskInput
   setTaskInput: (arg0: TaskInput) => void
   addTask: () => void
+  allCategories: CategoryDB[]
+}
+
+interface CategoriesSelect {
+  label: string
+  value: string
 }
 
 const NewTaskDialog = ({
@@ -30,7 +38,19 @@ const NewTaskDialog = ({
   taskInput,
   setTaskInput,
   addTask,
+  allCategories,
 }: Props) => {
+  const categoriesSelect: CategoriesSelect[] = []
+
+  allCategories.forEach((category) => {
+    if (category.isAdded) {
+      categoriesSelect.push({ label: category.name, value: category.id })
+    }
+  })
+
+  console.log("ALL CATEGORIES")
+  console.log(allCategories)
+
   return (
     <Dialog open={isNewDialogOpen} onOpenChange={setIsNewDialogOpen}>
       <DialogContent>
@@ -40,7 +60,28 @@ const NewTaskDialog = ({
         <FieldGroup>
           <Field>
             <Select
-              items={mockCategories}
+              items={categoriesSelect}
+              value={taskInput.categoryId}
+              onValueChange={(e) =>
+                setTaskInput({ ...taskInput, categoryId: e! })
+              }
+            >
+              <SelectTrigger className="w-full max-w-48">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Categories</SelectLabel>
+                  {categoriesSelect.map((item) => (
+                    <SelectItem key={item.value} value={item.value}>
+                      {item.label}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            {/* <Select
+              items={categoriesSelect}
               value={taskInput.categoryId}
               onValueChange={(e) =>
                 setTaskInput({ ...taskInput, categoryId: e! })
@@ -58,7 +99,7 @@ const NewTaskDialog = ({
                   ))}
                 </SelectGroup>
               </SelectContent>
-            </Select>
+            </Select> */}
           </Field>
           <Field>
             <Label htmlFor="description">Description</Label>

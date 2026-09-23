@@ -19,8 +19,6 @@ export const GET = async (
         tasks: true,
       },
     })
-    console.log("DATA")
-    console.log(data)
     // if (!data) {
     //   data = await prisma.day.create({
     //     data: { date: new Date(date) },
@@ -55,12 +53,9 @@ export const POST = async (
     // First it needs to find if the day already exists.
     // If it does then update it. Otherwise, create a new
     // day object in the database.
-    console.log("BODY")
-    console.log(body)
     let data = await prisma.day.findFirst({
       where: { date: new Date(date) },
     })
-    console.log(data)
 
     // if (!data) {
     //   data = await prisma.day.create({
@@ -107,14 +102,11 @@ export const PUT = async (
   req: Request,
   { params }: { params: Promise<{ date: string }> }
 ) => {
-  console.log("------------------------------------------------")
   try {
     const date = (await params).date
     const categoryId = (await req.json()).categoryId
 
     // console.log("ATTEMPTING")
-    console.log(date)
-    console.log(categoryId)
     await prisma.categoryDay.create({
       data: {
         dayDate: new Date(date),

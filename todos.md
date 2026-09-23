@@ -1,0 +1,4 @@
+- Remove print statements
+- Ensure proper error handling in APIs and in components
+- Ensure consistent naming
+- Remove redundant variables, and combine data if you can
