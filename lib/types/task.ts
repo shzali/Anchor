@@ -1,5 +1,5 @@
 export default interface Task {
   id: string
   description: string
-  status: "pending" | "complete" | "partially complete" | "incomplete"
+  status: "PENDING" | "COMPLETE" | "PARTIALLY COMPLETE" | "INCOMPLETE"
 }

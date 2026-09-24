@@ -104,15 +104,17 @@ export const PUT = async (
 ) => {
   try {
     const date = (await params).date
-    const categoryId = (await req.json()).categoryId
+    const body = await req.json()
 
+    console.log("BODY")
+    console.log(body)
     // console.log("ATTEMPTING")
-    await prisma.categoryDay.create({
-      data: {
-        dayDate: new Date(date),
-        categoryId,
-      },
-    })
+    // await prisma.categoryDay.create({
+    //   data: {
+    //     dayDate: new Date(date),
+    //     categoryId,
+    //   },
+    // })
     console.log("SUCCESS")
     return Response.json({}, { status: 200 })
   } catch (err) {

@@ -35,6 +35,7 @@ const Main = () => {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false)
 
+  // REDUNDANT
   const [planner, setPlanner] = useState<Category[]>([
     {
       id: "fc6756b8-21d3-4185-a5d7-93fc062a4ad1",
@@ -112,16 +113,12 @@ const Main = () => {
         if (res.status === 200) {
           const data = res.data
           const cats: CategoryDB[] = data.categories
-          console.log("CATEGORIES")
-          console.log(data.categories)
           setCategories(data.categories)
           setTasks(data.tasks)
 
           try {
             const res = await axios.get(`/api/categories`)
             if (res.status === 200) {
-              console.log("000000000000000000000000000000000000")
-              console.log(res.data)
               const modifiedCategories = res.data.map(
                 (category: CategoryDB) => {
                   return {
@@ -152,38 +149,57 @@ const Main = () => {
 
   const saveData = async () => {
     try {
-      const res = await axios.post(`/api/days/${date}`, { planner })
+      const res = await axios.put(`/api/days/${date}`, {
+        tasks,
+        categories,
+        allCategories,
+      })
     } catch (err) {
       console.error(err)
     }
   }
 
   const changeTaskStatus = (categoryId: string, taskId: string) => {
-    const newPlanner = [...planner].map((category) => {
-      if (category.id === categoryId) {
-        category.tasks.map((task) => {
-          if (task.id === taskId) {
-            if (task.status === "pending") {
-              task.status = "complete"
-            } else if (task.status === "complete") {
-              task.status = "partially complete"
-            } else if (task.status === "partially complete") {
-              task.status = "incomplete"
-            } else {
-              task.status = "pending"
-            }
-          }
-          return task
-        })
+    // const newPlanner = [...planner].map((category) => {
+    //   if (category.id === categoryId) {
+    //     category.tasks.map((task) => {
+    //       if (task.id === taskId) {
+    //         if (task.status === "PENDING") {
+    //           task.status = "COMPLETE"
+    //         } else if (task.status === "COMPLETE") {
+    //           task.status = "PARTIALLY COMPLETE"
+    //         } else if (task.status === "PARTIALLY COMPLETE") {
+    //           task.status = "INCOMPLETE"
+    //         } else {
+    //           task.status = "PENDING"
+    //         }
+    //       }
+    //       return task
+    //     })
+    //   }
+    //   return category
+    // })
+
+    const newTasks = [...tasks].map((task) => {
+      if (task.id === taskId) {
+        if (task.status === "PENDING") {
+          task.status = "COMPLETE"
+        } else if (task.status === "COMPLETE") {
+          task.status = "PARTIALLY COMPLETE"
+        } else if (task.status === "PARTIALLY COMPLETE") {
+          task.status = "INCOMPLETE"
+        } else {
+          task.status = "PENDING"
+        }
       }
-      return category
+      return task
     })
-    setPlanner(newPlanner)
+
+    // setPlanner(newPlanner)
+    setTasks(newTasks)
   }
 
   const addTask = async () => {
-    console.log("1")
-    console.log(taskInput)
     if (taskInput.categoryId !== "" && taskInput.description !== "") {
       // const newTask: ITask = {
       //   id: uuidv4(),
@@ -191,7 +207,6 @@ const Main = () => {
       //   status: "pending",
       // }
 
-      console.log("2")
       const newTask: TaskDB = {
         id: uuidv4(),
         description: taskInput.description,
@@ -200,7 +215,6 @@ const Main = () => {
         categoryId: taskInput.categoryId,
       }
 
-      console.log("3")
       // const newPlanner = [...planner].map((category) => {
       //   if (category.id === taskInput.categoryId) {
       //     return {
@@ -211,11 +225,8 @@ const Main = () => {
       //   return category
       // })
       // setPlanner(newPlanner)
-      console.log("NEW TASKS")
-      console.log([...tasks, newTask])
       setTasks([...tasks, newTask])
       setIsNewDialogOpen(false)
-      console.log("4")
 
       try {
         const res = await axios.put(`/api/tasks`, newTask)
@@ -226,7 +237,6 @@ const Main = () => {
   }
 
   const updateTask = () => {
-    console.log(taskInput)
     if (taskInput.categoryId !== "" && taskInput.description !== "") {
       const newPlanner = [...planner].map((category) => {
         if (category.id === taskInput.categoryId) {
@@ -242,7 +252,6 @@ const Main = () => {
         }
         return category
       })
-      console.log(newPlanner)
       setPlanner(newPlanner)
       setIsEditDialogOpen(false)
     }
@@ -263,9 +272,7 @@ const Main = () => {
   const addCategory = async (categoryId: string, categoryName: string) => {
     try {
       const res = await axios.put(`/api/days/${date}`, { categoryId })
-      console.log("1")
       if (res.status === 200) {
-        console.log("all good")
         const newCategories = [...allCategories].map((category) => {
           if (category.id === categoryId) {
             return { ...category, isAdded: true }
@@ -279,14 +286,15 @@ const Main = () => {
         ])
       }
     } catch (err) {
-      console.log("error!")
       console.error(err)
     }
   }
 
   return (
     <div className="flex min-h-screen w-full flex-col gap-5 p-6">
-      <Button onClick={saveData}>Save</Button>
+      <Button variant="outline" onClick={saveData}>
+        Save
+      </Button>
       <DateNavigation date={date} setDate={setDate} />
       <NewTaskDialog
         addTask={addTask}
@@ -308,7 +316,7 @@ const Main = () => {
         setIsAddCategoryOpen={setIsAddCategoryOpen}
         categories={allCategories}
         createCategory={createCategory}
-        addCategory={addCategory}
+        addCategory={null}
       />
       <Button onClick={() => setIsAddCategoryOpen(true)}>Add Category</Button>
       <div className="flex flex-col gap-17">
@@ -317,7 +325,21 @@ const Main = () => {
             <p>{category.name}</p>
             {tasks.map((task) => {
               if (task.categoryId === category.id) {
-                return <p key={task.id}>{task.description}</p>
+                // return <p key={task.id}>{task.description}</p>
+                return (
+                  <Task
+                    key={task.id}
+                    task={{
+                      id: task.id,
+                      description: task.description,
+                      status: task.status,
+                    }}
+                    category={category.id}
+                    changeTaskStatus={changeTaskStatus}
+                    setIsEditDialogOpen={setIsEditDialogOpen}
+                    setTaskInput={setTaskInput}
+                  />
+                )
               }
             })}
             <Button variant="outline" onClick={() => setIsNewDialogOpen(true)}>

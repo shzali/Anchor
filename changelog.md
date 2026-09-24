@@ -1,3 +1,7 @@
+### 24th September
+
+- Brought back functionality to single-click a task to change its status, and double-click it to edit it (currently local saves only)
+
 ### 23rd September
 
 - Can add a task to a category, and will persist.

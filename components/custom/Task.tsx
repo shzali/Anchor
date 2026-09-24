@@ -8,7 +8,7 @@ import TaskInput from "@/lib/types/taskInput"
 
 interface Props {
   task: ITask
-  category: Category
+  categoryId: string
   changeTaskStatus: (arg0: string, arg1: string) => void
   setIsEditDialogOpen: (arg0: boolean) => void
   setTaskInput: (arg0: TaskInput) => void
@@ -16,7 +16,7 @@ interface Props {
 
 const Task = ({
   task,
-  category,
+  categoryId,
   changeTaskStatus,
   setIsEditDialogOpen,
   setTaskInput,
@@ -25,15 +25,18 @@ const Task = ({
   const timerRef = useRef<null | NodeJS.Timeout>(null)
   const doubleClickedRef = useRef(false)
 
+  console.log("--- TASK ----")
+  console.log(task)
+
   return (
     <Card
       key={task.id}
       className={
-        task.status === "complete"
+        task.status === "COMPLETE"
           ? "bg-green-900"
-          : task.status === "partially complete"
+          : task.status === "PARTIALLY COMPLETE"
             ? "bg-yellow-900"
-            : task.status === "incomplete"
+            : task.status === "INCOMPLETE"
               ? "bg-red-900"
               : ""
       }
@@ -55,14 +58,14 @@ const Task = ({
           timerRef.current = setTimeout(() => {
             timerRef.current = null
             if (doubleClickedRef.current === false) {
-              changeTaskStatus(category.id, task.id)
+              changeTaskStatus(categoryId, task.id)
             }
             doubleClickedRef.current = false
           }, 170)
         } else {
           setIsEditDialogOpen(true)
           setTaskInput({
-            categoryId: category.id,
+            categoryId: categoryId,
             taskId: task.id,
             description: task.description,
           })

@@ -21,8 +21,6 @@ export const PUT = async (req: Request) => {
         },
       },
     })
-    console.log("DONE")
-    console.log(a)
     return Response.json({}, { status: 200 })
   } catch (err) {
     console.log("FAIL")
