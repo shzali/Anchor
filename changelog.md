@@ -1,6 +1,11 @@
+### 25th September
+
+- Changing task status now persists.
+- Fixed bug where a category in the 'Create Category' dialog would not be shown immediately after it was created.
+
 ### 24th September
 
-- Brought back functionality to single-click a task to change its status, and double-click it to edit it (currently local saves only)
+- Brought back functionality to single-click a task to change its status, and double-click it to edit it (currently local saves only).
 
 ### 23rd September
 

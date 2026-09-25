@@ -106,8 +106,57 @@ export const PUT = async (
     const date = (await params).date
     const body = await req.json()
 
-    console.log("BODY")
     console.log(body)
+    const tasks = body.tasks
+
+    for (let task of tasks) {
+      const foundTask = await prisma.task.findFirst({
+        where: {
+          id: task.id,
+          // Having the date here may be redundant, but I still implemented it here to provide extra assurance
+          dayDate: new Date(date),
+        },
+      })
+
+      if (foundTask) {
+        // Task was found, so update it
+        console.log("UPDATING TASK")
+        await prisma.task.update({
+          where: {
+            id: task.id,
+            dayDate: new Date(date),
+          },
+          data: {
+            description: task.description,
+            status: task.status,
+          },
+        })
+      } else {
+        // Task was not found, so create it
+        console.log("CREATING TASK")
+        await prisma.task.create({
+          data: {
+            id: task.id,
+            description: task.description,
+            status: task.status,
+            day: {
+              connect: { date: new Date(date) },
+            },
+            category: {
+              connect: { id: task.categoryId },
+            },
+          },
+        })
+      }
+    }
+    // await prisma.day.update({
+    //   where: {
+    //     date: new Date(date)
+    //   },
+    //   data: {
+
+    //   }
+    // })
     // console.log("ATTEMPTING")
     // await prisma.categoryDay.create({
     //   data: {

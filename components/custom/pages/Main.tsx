@@ -262,7 +262,9 @@ const Main = () => {
       const newCategory: CategoryDB = { id: uuidv4(), name: newCategoryName }
       const res = await axios.post(`/api/categories`, newCategory)
       if (res.status === 200) {
+        console.log("CREATED!")
         setCategories([...allCategories, newCategory])
+        setAllCategories([...allCategories, { ...newCategory, isAdded: false }])
       }
     } catch (err) {
       console.error(err)
