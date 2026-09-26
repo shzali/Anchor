@@ -1,3 +1,7 @@
+### 26th September
+
+- Moving between dates will load the data for that date, if there is any.
+
 ### 25th September
 
 - Changing task status now persists.

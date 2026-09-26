@@ -3,10 +3,10 @@ import { Button } from "../ui/button"
 
 interface Props {
   date: Date
-  setDate: (arg0: Date) => void
+  changeDate: (arg0: Date) => void
 }
 
-const DateNavigation = ({ date, setDate }: Props) => {
+const DateNavigation = ({ date, changeDate }: Props) => {
   return (
     <div className="flex w-full items-center justify-center gap-5">
       <Button
@@ -14,7 +14,7 @@ const DateNavigation = ({ date, setDate }: Props) => {
         size="icon-xs"
         onClick={() => {
           date.setDate(date.getDate() - 1)
-          setDate(new Date(date))
+          changeDate(new Date(date))
         }}
       >
         <ChevronLeftIcon />
@@ -25,7 +25,7 @@ const DateNavigation = ({ date, setDate }: Props) => {
         size="icon-xs"
         onClick={() => {
           date.setDate(date.getDate() + 1)
-          setDate(new Date(date))
+          changeDate(new Date(date))
         }}
       >
         <ChevronRightIcon />

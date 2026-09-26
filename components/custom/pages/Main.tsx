@@ -106,11 +106,11 @@ const Main = () => {
   // Holds all categories, even ones not added to the day
   const [allCategories, setAllCategories] = useState<CategoryDB[]>([])
 
-  useEffect(() => {
-    const getDayData = async () => {
-      try {
-        const res = await axios.get(`/api/days/${date}`)
-        if (res.status === 200) {
+  const getDayData = async () => {
+    try {
+      const res = await axios.get(`/api/days/${date}`)
+      if (res.status === 200) {
+        if (Object.keys(res.data).length > 0) {
           const data = res.data
           const cats: CategoryDB[] = data.categories
           setCategories(data.categories)
@@ -135,16 +135,35 @@ const Main = () => {
           } catch (err) {
             console.error(err)
           }
+        } else {
+          setCategories([])
+          setTasks([])
+          try {
+            const res = await axios.get(`/api/categories`)
+            if (res.status === 200) {
+              const modifiedCategories = res.data.map(
+                (category: CategoryDB) => {
+                  return {
+                    id: category.id,
+                    name: category.name,
+                    isAdded: false,
+                  }
+                }
+              )
+              setAllCategories(modifiedCategories)
+            }
+          } catch (err) {
+            console.error(err)
+          }
         }
-      } catch (err) {
-        console.error(err)
       }
+    } catch (err) {
+      console.error(err)
     }
+  }
 
-    const getCategories = async () => {}
-
+  useEffect(() => {
     getDayData()
-    getCategories()
   }, [])
 
   const saveData = async () => {
@@ -292,12 +311,17 @@ const Main = () => {
     }
   }
 
+  const changeDate = async (date: Date) => {
+    setDate(date)
+    getDayData()
+  }
+
   return (
     <div className="flex min-h-screen w-full flex-col gap-5 p-6">
       <Button variant="outline" onClick={saveData}>
         Save
       </Button>
-      <DateNavigation date={date} setDate={setDate} />
+      <DateNavigation date={date} changeDate={changeDate} />
       <NewTaskDialog
         addTask={addTask}
         isNewDialogOpen={isNewDialogOpen}

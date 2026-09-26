@@ -36,7 +36,11 @@ export const GET = async (
         })),
         tasks: data.tasks,
       }
+    } else {
+      reshapedData = {}
     }
+    // console.log("RESHAPED DATA")
+    // console.log(reshapedData)
     return Response.json(reshapedData, { status: 200 })
   } catch (err) {
     console.error(err)
@@ -109,7 +113,18 @@ export const PUT = async (
     console.log(body)
     const tasks = body.tasks
 
-    for (let task of tasks) {
+    console.log("------")
+    console.log(date)
+
+    // If no date was initially created, then we want to create it
+    const dateFound = await prisma.day.findFirst({
+      where: {
+        date: new Date(date),
+      },
+    })
+
+    if (dateFound) {
+      for (let task of tasks) {
       const foundTask = await prisma.task.findFirst({
         where: {
           id: task.id,
@@ -149,6 +164,19 @@ export const PUT = async (
         })
       }
     }
+    } else {
+      console.log("date not found")
+      await prisma.day.create({data: {
+        date: new Date(date)
+      }})
+
+      await prisma.task.createMany({
+        data:
+      })
+
+    }
+
+    
     // await prisma.day.update({
     //   where: {
     //     date: new Date(date)
