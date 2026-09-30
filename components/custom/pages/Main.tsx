@@ -100,6 +100,7 @@ const Main = () => {
 
   // ---
 
+  // Holds the categories
   const [categories, setCategories] = useState<CategoryDB[]>([])
   const [tasks, setTasks] = useState<TaskDB[]>([])
 
@@ -204,8 +205,8 @@ const Main = () => {
         if (task.status === "PENDING") {
           task.status = "COMPLETE"
         } else if (task.status === "COMPLETE") {
-          task.status = "PARTIALLY COMPLETE"
-        } else if (task.status === "PARTIALLY COMPLETE") {
+          task.status = "PARTIALLY_COMPLETE"
+        } else if (task.status === "PARTIALLY_COMPLETE") {
           task.status = "INCOMPLETE"
         } else {
           task.status = "PENDING"
@@ -290,25 +291,38 @@ const Main = () => {
     }
   }
 
+  // Simply adds an existing category to a page. Not involved in creating a category.
   const addCategory = async (categoryId: string, categoryName: string) => {
-    try {
-      const res = await axios.put(`/api/days/${date}`, { categoryId })
-      if (res.status === 200) {
-        const newCategories = [...allCategories].map((category) => {
-          if (category.id === categoryId) {
-            return { ...category, isAdded: true }
-          }
-          return category
-        })
-        setAllCategories(newCategories)
-        setCategories([
-          ...categories,
-          { id: categoryId, name: categoryName, isAdded: true },
-        ])
-      }
-    } catch (err) {
-      console.error(err)
+    // Put a check to only do this if the category has not already been added
+    const isAdded = categories.find((cat) => cat.id === categoryId)
+    if (!isAdded) {
+      setCategories([...categories, { id: categoryId, name: categoryName }])
+      const updatedCategories = allCategories.map((cat) => {
+        if (cat.id === categoryId) {
+          return { id: cat.id, name: cat.name, isAdded: true }
+        }
+        return cat
+      })
+      setAllCategories(updatedCategories)
     }
+    // try {
+    //   const res = await axios.put(`/api/days/${date}`, { categoryId })
+    //   if (res.status === 200) {
+    //     const newCategories = [...allCategories].map((category) => {
+    //       if (category.id === categoryId) {
+    //         return { ...category, isAdded: true }
+    //       }
+    //       return category
+    //     })
+    //     setAllCategories(newCategories)
+    //     setCategories([
+    //       ...categories,
+    //       { id: categoryId, name: categoryName, isAdded: true },
+    //     ])
+    //   }
+    // } catch (err) {
+    //   console.error(err)
+    // }
   }
 
   const changeDate = async (date: Date) => {
@@ -342,7 +356,7 @@ const Main = () => {
         setIsAddCategoryOpen={setIsAddCategoryOpen}
         categories={allCategories}
         createCategory={createCategory}
-        addCategory={null}
+        addCategory={addCategory}
       />
       <Button onClick={() => setIsAddCategoryOpen(true)}>Add Category</Button>
       <div className="flex flex-col gap-17">

@@ -34,7 +34,7 @@ const Task = ({
       className={
         task.status === "COMPLETE"
           ? "bg-green-900"
-          : task.status === "PARTIALLY COMPLETE"
+          : task.status === "PARTIALLY_COMPLETE"
             ? "bg-yellow-900"
             : task.status === "INCOMPLETE"
               ? "bg-red-900"

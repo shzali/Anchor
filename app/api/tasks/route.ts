@@ -7,12 +7,12 @@ export const PUT = async (req: Request) => {
     const body = await req.json()
     // console.log("------BODY")
     // console.log(body)
-
+    console.log("----BODY")
     const a = await prisma.task.create({
       data: {
         id: body.id,
         description: body.description,
-        status: Status.PENDING,
+        status: body.status,
         day: {
           connect: { date: new Date(body.dayDate) },
         },

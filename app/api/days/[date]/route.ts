@@ -1,5 +1,6 @@
 import { Status } from "@/generated/prisma/enums"
 import { prisma } from "@/lib/prisma"
+import { connect } from "http2"
 
 export const GET = async (
   req: Request,
@@ -112,6 +113,7 @@ export const PUT = async (
 
     console.log(body)
     const tasks = body.tasks
+    const categories = body.categories
 
     console.log("------")
     console.log(date)
@@ -124,59 +126,96 @@ export const PUT = async (
     })
 
     if (dateFound) {
+      console.log("DATE FOUND")
       for (let task of tasks) {
-      const foundTask = await prisma.task.findFirst({
-        where: {
-          id: task.id,
-          // Having the date here may be redundant, but I still implemented it here to provide extra assurance
-          dayDate: new Date(date),
+        const foundTask = await prisma.task.findFirst({
+          where: {
+            id: task.id,
+            // Having the date here may be redundant, but I still implemented it here to provide extra assurance
+            dayDate: new Date(date),
+          },
+        })
+
+        if (foundTask) {
+          console.log("TASK FOUND")
+          // Task was found, so update it
+          console.log("UPDATING TASK")
+          await prisma.task.update({
+            where: {
+              id: task.id,
+              dayDate: new Date(date),
+            },
+            data: {
+              description: task.description,
+              status: task.status,
+            },
+          })
+        } else {
+          // Task was not found, so create it
+          console.log("TASK FOUND")
+          await prisma.task.create({
+            data: {
+              id: task.id,
+              description: task.description,
+              status: task.status,
+              day: {
+                connect: { date: new Date(date) },
+              },
+              category: {
+                connect: { id: task.categoryId },
+              },
+            },
+          })
+        }
+      }
+    } else {
+      console.log("DATE NOT FOUND")
+      console.log("CREATING DATE")
+      await prisma.day.create({
+        data: {
+          date: new Date(date),
         },
       })
 
-      if (foundTask) {
-        // Task was found, so update it
-        console.log("UPDATING TASK")
-        await prisma.task.update({
+      // await prisma.task.createMany({
+      //   data:
+      // })
+
+      // TODO - create new categories
+
+      console.log("CREATING CATEGORIES 1")
+      await prisma.category.createMany({
+        data: categories,
+        skipDuplicates: true,
+      })
+
+      // Add categories
+
+      console.log("CREATING CATEGORIES 2")
+      for (let cat of categories) {
+        await prisma.category.update({
           where: {
-            id: task.id,
-            dayDate: new Date(date),
+            id: cat.id,
           },
           data: {
-            description: task.description,
-            status: task.status,
-          },
-        })
-      } else {
-        // Task was not found, so create it
-        console.log("CREATING TASK")
-        await prisma.task.create({
-          data: {
-            id: task.id,
-            description: task.description,
-            status: task.status,
-            day: {
-              connect: { date: new Date(date) },
-            },
-            category: {
-              connect: { id: task.categoryId },
+            days: {
+              create: {
+                day: {
+                  connect: { date: new Date(date) },
+                },
+              },
             },
           },
         })
       }
-    }
-    } else {
-      console.log("date not found")
-      await prisma.day.create({data: {
-        date: new Date(date)
-      }})
 
+      console.log("CREATING TASKS")
       await prisma.task.createMany({
-        data:
+        data: tasks,
+        skipDuplicates: true,
       })
-
     }
 
-    
     // await prisma.day.update({
     //   where: {
     //     date: new Date(date)
@@ -199,3 +238,14 @@ export const PUT = async (
     console.error(err)
   }
 }
+
+/*
+
+keep things simple for now
+
+- create date
+- create any new categories
+- add categories to date
+- add tasks
+
+*/

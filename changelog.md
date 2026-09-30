@@ -1,3 +1,8 @@
+### 30th September
+
+- Can now add categories and tasks and save them.
+- Correct status of task shown when loading from database.
+
 ### 26th September
 
 - Moving between dates will load the data for that date, if there is any.
