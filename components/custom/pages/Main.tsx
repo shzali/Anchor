@@ -283,7 +283,7 @@ const Main = () => {
       const res = await axios.post(`/api/categories`, newCategory)
       if (res.status === 200) {
         console.log("CREATED!")
-        setCategories([...allCategories, newCategory])
+        // setCategories([...allCategories, newCategory])
         setAllCategories([...allCategories, { ...newCategory, isAdded: false }])
       }
     } catch (err) {
@@ -331,63 +331,67 @@ const Main = () => {
   }
 
   return (
-    <div className="flex min-h-screen w-full flex-col gap-5 p-6">
-      <Button variant="outline" onClick={saveData}>
-        Save
-      </Button>
-      <DateNavigation date={date} changeDate={changeDate} />
-      <NewTaskDialog
-        addTask={addTask}
-        isNewDialogOpen={isNewDialogOpen}
-        setIsNewDialogOpen={setIsEditDialogOpen}
-        setTaskInput={setTaskInput}
-        taskInput={taskInput}
-        allCategories={allCategories}
-      />
-      <EditTaskDialog
-        isEditDialogOpen={isEditDialogOpen}
-        setIsEditDialogOpen={setIsEditDialogOpen}
-        setTaskInput={setTaskInput}
-        taskInput={taskInput}
-        updateTask={updateTask}
-      />
-      <AddCategoryDialog
-        isAddCategoryOpen={isAddCategoryOpen}
-        setIsAddCategoryOpen={setIsAddCategoryOpen}
-        categories={allCategories}
-        createCategory={createCategory}
-        addCategory={addCategory}
-      />
-      <Button onClick={() => setIsAddCategoryOpen(true)}>Add Category</Button>
-      <div className="flex flex-col gap-17">
-        {categories.map((category) => (
-          <div key={category.id}>
-            <p>{category.name}</p>
-            {tasks.map((task) => {
-              if (task.categoryId === category.id) {
-                // return <p key={task.id}>{task.description}</p>
-                return (
-                  <Task
-                    key={task.id}
-                    task={{
-                      id: task.id,
-                      description: task.description,
-                      status: task.status,
-                    }}
-                    category={category.id}
-                    changeTaskStatus={changeTaskStatus}
-                    setIsEditDialogOpen={setIsEditDialogOpen}
-                    setTaskInput={setTaskInput}
-                  />
-                )
-              }
-            })}
-            <Button variant="outline" onClick={() => setIsNewDialogOpen(true)}>
-              New Task
-            </Button>
-          </div>
-        ))}
-        {/* {planner.map((category) => (
+    <div className="mx-auto max-w-2xl">
+      <div className="flex min-h-screen flex-col gap-5 p-6">
+        <Button variant="outline" onClick={saveData}>
+          Save
+        </Button>
+        <DateNavigation date={date} changeDate={changeDate} />
+        <NewTaskDialog
+          addTask={addTask}
+          isNewDialogOpen={isNewDialogOpen}
+          setIsNewDialogOpen={setIsEditDialogOpen}
+          setTaskInput={setTaskInput}
+          taskInput={taskInput}
+          allCategories={allCategories}
+        />
+        <EditTaskDialog
+          isEditDialogOpen={isEditDialogOpen}
+          setIsEditDialogOpen={setIsEditDialogOpen}
+          setTaskInput={setTaskInput}
+          taskInput={taskInput}
+          updateTask={updateTask}
+        />
+        <AddCategoryDialog
+          isAddCategoryOpen={isAddCategoryOpen}
+          setIsAddCategoryOpen={setIsAddCategoryOpen}
+          categories={allCategories}
+          createCategory={createCategory}
+          addCategory={addCategory}
+        />
+        <Button onClick={() => setIsAddCategoryOpen(true)}>Add Category</Button>
+        <div className="flex flex-col gap-17">
+          {categories.map((category) => (
+            <div key={category.id}>
+              <p>{category.name}</p>
+              {tasks.map((task) => {
+                if (task.categoryId === category.id) {
+                  // return <p key={task.id}>{task.description}</p>
+                  return (
+                    <Task
+                      key={task.id}
+                      task={{
+                        id: task.id,
+                        description: task.description,
+                        status: task.status,
+                      }}
+                      category={category.id}
+                      changeTaskStatus={changeTaskStatus}
+                      setIsEditDialogOpen={setIsEditDialogOpen}
+                      setTaskInput={setTaskInput}
+                    />
+                  )
+                }
+              })}
+              <Button
+                variant="outline"
+                onClick={() => setIsNewDialogOpen(true)}
+              >
+                New Task
+              </Button>
+            </div>
+          ))}
+          {/* {planner.map((category) => (
           <div key={category.id}>
             <p className="mb-3 font-bold uppercase">{category.name}</p>
             <div className="flex flex-col gap-3">
@@ -404,6 +408,7 @@ const Main = () => {
             </div>
           </div>
         ))} */}
+        </div>
       </div>
     </div>
   )

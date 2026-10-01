@@ -1,3 +1,8 @@
+### 1st October
+
+- Reduced width of interface.
+- Fixed bug where creating a category would suddenly add all categories to the page.
+
 ### 30th September
 
 - Can now add categories and tasks and save them.
