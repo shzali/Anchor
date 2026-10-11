@@ -1,5 +1,5 @@
 import { Status } from "@/generated/prisma/enums"
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/client"
 import { connect } from "http2"
 
 export const GET = async (
@@ -29,6 +29,8 @@ export const GET = async (
     let reshapedData
 
     if (data) {
+      // console.log("--- DATA ---")
+      // console.dir(data, { depth: null })
       reshapedData = {
         date: data.date,
         categories: data.categories.map((category) => ({
@@ -45,6 +47,7 @@ export const GET = async (
     return Response.json(reshapedData, { status: 200 })
   } catch (err) {
     console.error(err)
+    return Response.json(err, { status: 500 })
   }
 }
 

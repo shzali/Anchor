@@ -6,6 +6,30 @@ interface Props {
   changeDate: (arg0: Date) => void
 }
 
+const days = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+]
+const months = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+]
+
 const DateNavigation = ({ date, changeDate }: Props) => {
   return (
     <div className="flex w-full items-center justify-center gap-5">
@@ -19,7 +43,9 @@ const DateNavigation = ({ date, changeDate }: Props) => {
       >
         <ChevronLeftIcon />
       </Button>
-      <h1>{date.toLocaleDateString()}</h1>
+      <div className="w-50">
+        <h1 className="text-center">{`${days[date.getDay()]}, ${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`}</h1>
+      </div>
       <Button
         variant="outline"
         size="icon-xs"

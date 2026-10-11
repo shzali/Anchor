@@ -1,7 +1,6 @@
 ### Features
 
 - Tidy up 'New Category' dialog - should be able to scroll vertically if many categories present
-- Fix 'addCategory' function
 
 ### General
 

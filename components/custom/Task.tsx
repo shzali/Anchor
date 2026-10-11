@@ -5,6 +5,7 @@ import { Card, CardContent } from "../ui/card"
 import ITask from "@/lib/types/task"
 import Category from "@/lib/types/category"
 import TaskInput from "@/lib/types/taskInput"
+import { Badge } from "../ui/badge"
 
 interface Props {
   task: ITask
@@ -12,6 +13,13 @@ interface Props {
   changeTaskStatus: (arg0: string, arg1: string) => void
   setIsEditDialogOpen: (arg0: boolean) => void
   setTaskInput: (arg0: TaskInput) => void
+}
+
+const badgeStyles = {
+  PENDING: ["bg-cyan-950 text-cyan-500", "Pending"],
+  COMPLETE: ["bg-green-950 text-green-500", "Complete"],
+  PARTIALLY_COMPLETE: ["bg-yellow-950 text-yellow-500", "Partially Complete"],
+  INCOMPLETE: ["bg-red-950 text-red-400", "Incomplete"],
 }
 
 const Task = ({
@@ -25,21 +33,10 @@ const Task = ({
   const timerRef = useRef<null | NodeJS.Timeout>(null)
   const doubleClickedRef = useRef(false)
 
-  console.log("--- TASK ----")
-  console.log(task)
-
   return (
     <Card
+      className="px-0 py-3"
       key={task.id}
-      className={
-        task.status === "COMPLETE"
-          ? "bg-green-900"
-          : task.status === "PARTIALLY_COMPLETE"
-            ? "bg-yellow-900"
-            : task.status === "INCOMPLETE"
-              ? "bg-red-900"
-              : ""
-      }
       onClick={() => {
         // The card can be single-clicked to change its status, or double-clicked to be edited.
         // To allow for double-clicking, a short timer is set when clicked once.
@@ -74,6 +71,11 @@ const Task = ({
       }}
     >
       <CardContent>
+        <Badge
+          className={`${badgeStyles[task.status.toLocaleUpperCase()][0]} mb-3`}
+        >
+          {badgeStyles[task.status][1]}
+        </Badge>
         <p>{task.description}</p>
       </CardContent>
     </Card>

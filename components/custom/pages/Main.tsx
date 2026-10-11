@@ -13,6 +13,7 @@ import axios from "axios"
 import { prisma } from "@/lib/prisma"
 import AddCategoryDialog from "../AddCategoryDialog"
 import CategoryDB from "@/lib/types/categoryDB"
+import { Card, CardContent } from "@/components/ui/card"
 
 interface TaskDB {
   id: string
@@ -114,6 +115,8 @@ const Main = () => {
         if (Object.keys(res.data).length > 0) {
           const data = res.data
           const cats: CategoryDB[] = data.categories
+          console.log("--- DATA ---")
+          console.log(data)
           setCategories(data.categories)
           setTasks(data.tasks)
 
@@ -333,10 +336,10 @@ const Main = () => {
   return (
     <div className="mx-auto max-w-2xl">
       <div className="flex min-h-screen flex-col gap-5 p-6">
-        <Button variant="outline" onClick={saveData}>
-          Save
-        </Button>
         <DateNavigation date={date} changeDate={changeDate} />
+        {/* <Button className="self-start" variant="secondary" onClick={saveData}>
+          Save
+        </Button> */}
         <NewTaskDialog
           addTask={addTask}
           isNewDialogOpen={isNewDialogOpen}
@@ -359,37 +362,48 @@ const Main = () => {
           createCategory={createCategory}
           addCategory={addCategory}
         />
-        <Button onClick={() => setIsAddCategoryOpen(true)}>Add Category</Button>
+        <Button
+          className="self-start"
+          variant="outline"
+          onClick={() => setIsAddCategoryOpen(true)}
+        >
+          + Add Category
+        </Button>
         <div className="flex flex-col gap-17">
           {categories.map((category) => (
-            <div key={category.id}>
-              <p>{category.name}</p>
-              {tasks.map((task) => {
-                if (task.categoryId === category.id) {
-                  // return <p key={task.id}>{task.description}</p>
-                  return (
-                    <Task
-                      key={task.id}
-                      task={{
-                        id: task.id,
-                        description: task.description,
-                        status: task.status,
-                      }}
-                      category={category.id}
-                      changeTaskStatus={changeTaskStatus}
-                      setIsEditDialogOpen={setIsEditDialogOpen}
-                      setTaskInput={setTaskInput}
-                    />
-                  )
-                }
-              })}
-              <Button
-                variant="outline"
-                onClick={() => setIsNewDialogOpen(true)}
-              >
-                New Task
-              </Button>
-            </div>
+            <Card key={category.id} className="bg-neutral-950">
+              <CardContent>
+                <p className="text-2xl">{category.name}</p>
+                <div className="mt-5 flex flex-col gap-4">
+                  {tasks.map((task) => {
+                    if (task.categoryId === category.id) {
+                      // return <p key={task.id}>{task.description}</p>
+                      return (
+                        <Task
+                          key={task.id}
+                          task={{
+                            id: task.id,
+                            description: task.description,
+                            status: task.status,
+                          }}
+                          category={category.id}
+                          changeTaskStatus={changeTaskStatus}
+                          setIsEditDialogOpen={setIsEditDialogOpen}
+                          setTaskInput={setTaskInput}
+                        />
+                      )
+                    }
+                  })}
+                </div>
+                <Button
+                  variant="outline"
+                  onClick={() => setIsNewDialogOpen(true)}
+                  className="mt-5"
+                >
+                  + Add Task
+                </Button>
+              </CardContent>
+            </Card>
           ))}
           {/* {planner.map((category) => (
           <div key={category.id}>

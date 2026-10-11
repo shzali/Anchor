@@ -1,3 +1,13 @@
+### 11th October
+
+- Integrated Jest, and added tests for retrieving data.
+
+### 3rd October
+
+- Improved the display of categories and tasks
+- Status now indicated by coloured badge instead of the coloured background of the task.
+- Date now includes the day name and month name.
+
 ### 1st October
 
 - Reduced width of interface.
