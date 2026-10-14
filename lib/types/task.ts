@@ -1,5 +1,5 @@
-export default interface Task {
+import TaskInput from "./taskInput"
+
+export default interface Task extends TaskInput {
   id: string
-  description: string
-  status: "PENDING" | "COMPLETE" | "PARTIALLY_COMPLETE" | "INCOMPLETE"
 }

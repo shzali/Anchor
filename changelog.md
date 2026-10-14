@@ -1,6 +1,7 @@
 ### 14th October 2026
 
-- Added a test for creating a task.
+- Added some tests for creating a task.
+- Task now gets saved to database as soon as it is created.
 
 ### 11th October 2026
 

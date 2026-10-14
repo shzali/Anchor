@@ -14,6 +14,8 @@ import { prisma } from "@/lib/prisma"
 import AddCategoryDialog from "../AddCategoryDialog"
 import CategoryDB from "@/lib/types/categoryDB"
 import { Card, CardContent } from "@/components/ui/card"
+import TaskInput from "@/lib/types/taskInput"
+import TaskType from "@/lib/types/task"
 
 interface TaskDB {
   id: string
@@ -222,42 +224,59 @@ const Main = () => {
     setTasks(newTasks)
   }
 
-  const addTask = async () => {
-    if (taskInput.categoryId !== "" && taskInput.description !== "") {
-      // const newTask: ITask = {
-      //   id: uuidv4(),
-      //   description: taskInput.description,
-      //   status: "pending",
-      // }
+  const createTask = async (task: TaskType) => {
+    try {
+      task = { ...task, id: uuidv4(), status: "PENDING", dayDate: date }
+      const res = await axios.post("/api/tasks", task)
 
-      const newTask: TaskDB = {
-        id: uuidv4(),
-        description: taskInput.description,
-        status: "pending",
-        dayDate: date,
-        categoryId: taskInput.categoryId,
+      if (res.status === 200 || res.status === 201) {
+        setTasks([...tasks, task])
+        setIsNewDialogOpen(false)
+        return true
       }
-
-      // const newPlanner = [...planner].map((category) => {
-      //   if (category.id === taskInput.categoryId) {
-      //     return {
-      //       ...category,
-      //       tasks: [...category.tasks, newTask],
-      //     }
-      //   }
-      //   return category
-      // })
-      // setPlanner(newPlanner)
-      setTasks([...tasks, newTask])
-      setIsNewDialogOpen(false)
-
-      try {
-        const res = await axios.put(`/api/tasks`, newTask)
-      } catch (err) {
-        console.error(err)
-      }
+      return false
+    } catch (err) {
+      console.error(err)
+      return false
     }
   }
+
+  // const addTask = async () => {
+  //   if (taskInput.categoryId !== "" && taskInput.description !== "") {
+  //     // const newTask: ITask = {
+  //     //   id: uuidv4(),
+  //     //   description: taskInput.description,
+  //     //   status: "pending",
+  //     // }
+
+  //     const newTask: TaskDB = {
+  //       id: uuidv4(),
+  //       description: taskInput.description,
+  //       status: "pending",
+  //       dayDate: date,
+  //       categoryId: taskInput.categoryId,
+  //     }
+
+  //     // const newPlanner = [...planner].map((category) => {
+  //     //   if (category.id === taskInput.categoryId) {
+  //     //     return {
+  //     //       ...category,
+  //     //       tasks: [...category.tasks, newTask],
+  //     //     }
+  //     //   }
+  //     //   return category
+  //     // })
+  //     // setPlanner(newPlanner)
+  //     setTasks([...tasks, newTask])
+  //     setIsNewDialogOpen(false)
+
+  //     try {
+  //       const res = await axios.put(`/api/tasks`, newTask)
+  //     } catch (err) {
+  //       console.error(err)
+  //     }
+  //   }
+  // }
 
   const updateTask = () => {
     if (taskInput.categoryId !== "" && taskInput.description !== "") {
@@ -341,20 +360,21 @@ const Main = () => {
           Save
         </Button> */}
         <NewTaskDialog
-          addTask={addTask}
+          // addTask={addTask}
+          createTask={createTask}
           isNewDialogOpen={isNewDialogOpen}
           setIsNewDialogOpen={setIsEditDialogOpen}
-          setTaskInput={setTaskInput}
-          taskInput={taskInput}
+          // setTaskInput={setTaskInput}
+          // taskInput={taskInput}
           allCategories={allCategories}
         />
-        <EditTaskDialog
+        {/* <EditTaskDialog
           isEditDialogOpen={isEditDialogOpen}
           setIsEditDialogOpen={setIsEditDialogOpen}
           setTaskInput={setTaskInput}
           taskInput={taskInput}
           updateTask={updateTask}
-        />
+        /> */}
         <AddCategoryDialog
           isAddCategoryOpen={isAddCategoryOpen}
           setIsAddCategoryOpen={setIsAddCategoryOpen}
@@ -389,7 +409,7 @@ const Main = () => {
                           category={category.id}
                           changeTaskStatus={changeTaskStatus}
                           setIsEditDialogOpen={setIsEditDialogOpen}
-                          setTaskInput={setTaskInput}
+                          // setTaskInput={setTaskInput}
                         />
                       )
                     }

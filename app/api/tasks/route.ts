@@ -7,6 +7,9 @@ export const POST = async (req: Request) => {
 
     const body = await req.json()
 
+    console.log("--BODY")
+    console.log(body)
+
     if (
       !body.id ||
       !body.description ||

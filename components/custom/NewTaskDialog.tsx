@@ -17,13 +17,16 @@ import {
 } from "../ui/select"
 import mockCategories from "@/lib/mockCategories"
 import CategoryDB from "@/lib/types/categoryDB"
+import TaskInputType from "@/lib/types/taskInput"
+import { useState } from "react"
 
 interface Props {
   isNewDialogOpen: boolean
   setIsNewDialogOpen: (arg0: boolean) => void
-  taskInput: TaskInput
-  setTaskInput: (arg0: TaskInput) => void
-  addTask: () => void
+  // taskInput: TaskInput
+  // setTaskInput: (arg0: TaskInput) => void
+  // addTask: () => void
+  createTask: (arg0: TaskInput) => void
   allCategories: CategoryDB[]
 }
 
@@ -35,11 +38,17 @@ interface CategoriesSelect {
 const NewTaskDialog = ({
   isNewDialogOpen,
   setIsNewDialogOpen,
-  taskInput,
-  setTaskInput,
-  addTask,
+  // taskInput,
+  // setTaskInput,
+  createTask,
   allCategories,
 }: Props) => {
+  const [input, setInput] = useState<TaskInputType>({
+    description: "",
+    categoryId: "",
+    status: "PENDING",
+  })
+
   const categoriesSelect: CategoriesSelect[] = []
 
   allCategories.forEach((category) => {
@@ -61,10 +70,8 @@ const NewTaskDialog = ({
           <Field>
             <Select
               items={categoriesSelect}
-              value={taskInput.categoryId}
-              onValueChange={(e) =>
-                setTaskInput({ ...taskInput, categoryId: e! })
-              }
+              value={input.categoryId}
+              onValueChange={(e) => setInput({ ...input, categoryId: e! })}
             >
               <SelectTrigger className="w-full max-w-48">
                 <SelectValue />
@@ -106,16 +113,22 @@ const NewTaskDialog = ({
             <Input
               id="description"
               name="description"
-              value={taskInput.description}
+              value={input.description}
               onChange={(e) =>
-                setTaskInput({
-                  ...taskInput,
+                setInput({
+                  ...input,
                   description: e.target.value,
                 })
               }
             />
           </Field>
-          <Button onClick={addTask}>Add</Button>
+          <Button
+            onClick={() => {
+              createTask(input)
+            }}
+          >
+            Add
+          </Button>
         </FieldGroup>
       </DialogContent>
     </Dialog>

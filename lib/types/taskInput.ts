@@ -1,5 +1,5 @@
 export default interface TaskInput {
   categoryId: string
-  taskId: string
   description: string
+  status: "PENDING" | "COMPLETE" | "PARTIALLY_COMPLETE" | "INCOMPLETE"
 }
