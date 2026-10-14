@@ -1,45 +1,49 @@
-### 11th October
+### 14th October 2026
+
+- Added a test for creating a task.
+
+### 11th October 2026
 
 - Integrated Jest, and added tests for retrieving data.
 
-### 3rd October
+### 3rd October 2026
 
 - Improved the display of categories and tasks
 - Status now indicated by coloured badge instead of the coloured background of the task.
 - Date now includes the day name and month name.
 
-### 1st October
+### 1st October 2026
 
 - Reduced width of interface.
 - Fixed bug where creating a category would suddenly add all categories to the page.
 
-### 30th September
+### 30th September 2026
 
 - Can now add categories and tasks and save them.
 - Correct status of task shown when loading from database.
 
-### 26th September
+### 26th September 2026
 
 - Moving between dates will load the data for that date, if there is any.
 
-### 25th September
+### 25th September 2026
 
 - Changing task status now persists.
 - Fixed bug where a category in the 'Create Category' dialog would not be shown immediately after it was created.
 
-### 24th September
+### 24th September 2026
 
 - Brought back functionality to single-click a task to change its status, and double-click it to edit it (currently local saves only).
 
-### 23rd September
+### 23rd September 2026
 
 - Can add a task to a category, and will persist.
 
-### 14th September
+### 14th September 2026
 
 - For a particular day, you can add a category and it will be displayed on the screen.
 
-### 30th August - 3rd September
+### 30th August - 3rd September 2026
 
 - Added database integration
 - Cannot create nor save tasks yet, but when the page is loaded (showing today's date), tasks and categories for today will be fetched and displayed

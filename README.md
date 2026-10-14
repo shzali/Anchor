@@ -13,6 +13,7 @@ A simple to-do app won't suffice, because I need the app to provide weekly stati
 ## Tech Stack
 
 - React (Next.js) + TypeScript
+- Jest
 - shadcn (Tailwind CSS)
 - Prisma (PostgreSQL)
 - Neon
@@ -20,6 +21,7 @@ A simple to-do app won't suffice, because I need the app to provide weekly stati
 ## Other Packages
 
 - uuid
+- axios
 
 ## Changelog
 
