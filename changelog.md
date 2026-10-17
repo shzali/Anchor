@@ -1,3 +1,8 @@
+### 17th October 2026
+
+- Removed the double-click functionality for changing a task's status, replaced it with simply clicking on the status badge.
+- Added bulk saving to database if the statuses of multiple tasks are changed in quick succession.
+
 ### 14th October 2026
 
 - Added some tests for creating a task.

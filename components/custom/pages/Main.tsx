@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { v4 as uuidv4 } from "uuid"
 import Task from "@/components/custom/Task"
@@ -110,6 +110,15 @@ const Main = () => {
   // Holds all categories, even ones not added to the day
   const [allCategories, setAllCategories] = useState<CategoryDB[]>([])
 
+  // A user can update the status of multiple tasks in quick succession. Instead of updating
+  // the db after each change, the system uses this state to keep track of the ids of the tasks
+  // that have been updated, and then after some time has passed after the last change, it will
+  // update all these in one go.
+  const updatedTasks = useRef<string[]>([])
+
+  const timer = useRef(null)
+  const isTimerOn = useRef(false)
+
   const getDayData = async () => {
     try {
       const res = await axios.get(`/api/days/${date}`)
@@ -117,8 +126,6 @@ const Main = () => {
         if (Object.keys(res.data).length > 0) {
           const data = res.data
           const cats: CategoryDB[] = data.categories
-          console.log("--- DATA ---")
-          console.log(data)
           setCategories(data.categories)
           setTasks(data.tasks)
 
@@ -184,27 +191,7 @@ const Main = () => {
     }
   }
 
-  const changeTaskStatus = (categoryId: string, taskId: string) => {
-    // const newPlanner = [...planner].map((category) => {
-    //   if (category.id === categoryId) {
-    //     category.tasks.map((task) => {
-    //       if (task.id === taskId) {
-    //         if (task.status === "PENDING") {
-    //           task.status = "COMPLETE"
-    //         } else if (task.status === "COMPLETE") {
-    //           task.status = "PARTIALLY COMPLETE"
-    //         } else if (task.status === "PARTIALLY COMPLETE") {
-    //           task.status = "INCOMPLETE"
-    //         } else {
-    //           task.status = "PENDING"
-    //         }
-    //       }
-    //       return task
-    //     })
-    //   }
-    //   return category
-    // })
-
+  const changeTaskStatus = (taskId: string) => {
     const newTasks = [...tasks].map((task) => {
       if (task.id === taskId) {
         if (task.status === "PENDING") {
@@ -220,9 +207,45 @@ const Main = () => {
       return task
     })
 
-    // setPlanner(newPlanner)
     setTasks(newTasks)
+
+    const includesTaskId = updatedTasks.current.includes(taskId)
+    if (!includesTaskId) {
+      console.log("DOES NOT INCLUDE TASK")
+      updatedTasks.current = [...updatedTasks.current, taskId]
+    } else {
+      console.log("INCLUDES TASK")
+    }
+
+    // Debouncing - only update task's status in database if 1.5 seconds passed without changing it
+
+    if (isTimerOn.current) {
+      clearTimeout(timer.current)
+    }
+    isTimerOn.current = true
+    timer.current = setTimeout(bulkUpdateTasksDB, 1500)
   }
+
+  const bulkUpdateTasksDB = async () => {
+    const newTasks = tasks.filter((task) =>
+      updatedTasks.current.includes(task.id)
+    )
+
+    try {
+      const res = await axios.put(`/api/tasks/bulk`, newTasks)
+    } catch (err) {
+      console.error(err)
+    }
+    updatedTasks.current = []
+  }
+
+  // const debounceChangeStatusDB = () => {
+  //   if (isTimerOn.current) {
+  //     clearTimeout(timer.current)
+  //   }
+  //   isTimerOn.current = true
+  //   timer.current = setTimeout(() => changeTaskStatus(task.id), 1500)
+  // }
 
   const createTask = async (task: TaskType) => {
     try {
@@ -232,12 +255,9 @@ const Main = () => {
       if (res.status === 200 || res.status === 201) {
         setTasks([...tasks, task])
         setIsNewDialogOpen(false)
-        return true
       }
-      return false
     } catch (err) {
       console.error(err)
-      return false
     }
   }
 

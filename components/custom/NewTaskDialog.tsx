@@ -57,9 +57,6 @@ const NewTaskDialog = ({
     }
   })
 
-  console.log("ALL CATEGORIES")
-  console.log(allCategories)
-
   return (
     <Dialog open={isNewDialogOpen} onOpenChange={setIsNewDialogOpen}>
       <DialogContent>
